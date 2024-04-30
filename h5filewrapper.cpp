@@ -72,7 +72,7 @@ H5FSRoot::GetAttr(const std::string&& path, struct stat *stbuf){
     H5O_info_t obj_info;
     assert(m_rootid >= 0);
 
-    if(H5Oget_info_by_name(m_rootid, path.c_str(), &obj_info, H5O_INFO_ALL, H5P_DEFAULT) < 0)
+    if(H5Oget_info_by_name(m_rootid, path.c_str(), &obj_info, H5O_INFO_ALL) < 0)
         return -ENOENT;
 
     stbuf->st_ctim.tv_sec = obj_info.ctime;
@@ -104,7 +104,7 @@ H5FSRoot::Open(const std::string&& path, struct fuse_file_info *fi){
     if((fi->flags & 3) != O_RDONLY)
         return -EACCES;
     H5O_info_t obj_info;
-    if(H5Oget_info_by_name(m_rootid, path.c_str(), &obj_info, H5P_DEFAULT, H5P_DEFAULT) < 0)
+    if(H5Oget_info_by_name(m_rootid, path.c_str(), &obj_info, H5P_DEFAULT) < 0)
         return -ENOENT;
     fi->fh = H5Dopen(m_rootid, path.c_str(), H5P_DEFAULT);
     return 0;
@@ -132,7 +132,7 @@ H5FSRoot::Unlink(const std::string&& path){
     H5O_info_t obj_info;
     assert(m_rootid >= 0);
 
-    if(H5Oget_info_by_name(m_rootid, path.c_str(), &obj_info, H5P_DEFAULT, H5P_DEFAULT) < 0)
+    if(H5Oget_info_by_name(m_rootid, path.c_str(), &obj_info, H5P_DEFAULT) < 0)
         return -ENOENT;
     return H5Ldelete(m_rootid, path.c_str(), H5P_DEFAULT);
 }
